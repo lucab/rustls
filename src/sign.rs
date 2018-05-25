@@ -214,3 +214,38 @@ impl Signer for RSASigner {
         self.scheme
     }
 }
+
+// Regression test for https://github.com/ctz/rustls/issues/74.
+#[test]
+fn test_ghissue_74() {
+    let pem = r#"-----BEGIN RSA PRIVATE KEY-----
+MIIEpAIBAAKCAQEA2P6jXiRYufQCSVS6qsqmE1ZLQIcfcJMZjl5qg+a6VD9s71yh
+0hxu0ow3Fzc7yeh3fvn+2sVFvlMlZ6pu0RVE1Qad4qvnRtEldRuQYcq4Qw6D/3Tq
+veyNVsO7NaAl6Eu9yw3XNGdG7eqVyrrFUnYXJ0OipY6LnywCs35G7EAUrmW++dH0
+ArndtEqb8uPrD7P2E7f4tU6TZaQpvZnPy/PVWUe8k4VeyEvQASIN6RSIj7gEMlXs
+ye4jgFyQmZcvF7cko3/bhWSG6YD4/LmFyEx1gjQk6qEHRXm8j5W1CvSUG544GBne
+LzoWIo87uuQAMXk/ZXtgMnHOetLO4lC8Q19VewIDAQABAoIBAHAPyOSUVrHpnsiq
+FiCfuPahiQlQ/t6PSRJqFg36ON3LR4Gxz+wHPQBE4yp9HsZd5GBR0NjAKg1pORb5
+QHN/zWVKHn1yE2VSG0sIKh8mptQSif6CLbxZjoBxYpwGEa2Od/yGME5iy5GQpTzm
+CYNVcw2W80cWf2p7OwXhP9VAHq4U785ahK6x4H+hjMBJRoRy6Zeqz+w/xCyq56fv
+xM3qIk8JqhDztU+Ln0x/bug3Xry/CcSsdZL2wxlZwfaD8NpB0GQbaDBfOXVTGdil
+8rGLnN7hCUO9AJqpsCUyEVRkB4xBW3CgZU+DpBf6vSKstFsRZMSg32GCHVU7dh/6
+TI8xqxkCgYEA4hjr+yqSmhRi5TF3LW36+7z0eDya+82rQcdqry358SRRu1/ZlAda
+/N38Qvir0Cj385Jw2wX8HYverry0VJbsGz5OBCB1dXP6HQ81JBCR8oqgtX8anGvl
+JsmQRte2gVVeFPe1VsDBxrmUKhZXUSpPwjGIr3OlvsIbeugCPcfxaN8CgYEA9bGF
+8MmFREtB2ZS6wZjoSivjcoAhslI3qzmLf+jQU34/a0fiLKa3muYZ+ZDKsh9ZSljK
+366BvJ1bU/osnSSuukrtQ88qZpJJvdU9EwTqcNr8L7+1jZArrN/hbB/LARhu1sjG
+Fq9O2v8/D1Uo/cjzcFBaaA2rbpXVP4OcXDyWOuUCgYBtsK+T/BSBwhA0p2ntVWUl
+ioeEacq7DQ3f7NJ6SLDw57DrWdYiNetTsJK5HxGj/KxGtC4iZGXrI7eWSKCoRUwo
+73JEGEdEA089l+otJAjahZzwUMjlSIc06Scg53h4iKULQR3uB7g7JD+Yp5wXGZL2
+YLeyf0XTJTLVzwd/V6hsOwKBgQDqNtgTaVhEeWWF0JWT9nsCMgJ55ZG510zASnQk
+dEEcRs6YK4d9v1RqMo5ybUf9M4tAJ5MGVunQb0Vfsa6UAyMZ7lFuge/OpgfsEnpN
+RjNjcC5WKnAdSmGIREg1db1lBvCqiezkNSx78jUgHbOc8tK2r7LvXJCfM/B8wq7s
+8sjXzQKBgQCFtN2BRQj4oyl4itaQCGoWdRZLYJOY5G2tm/Gd+wHQK3FubrMJyZpC
+IKhnvhlWh9ghNozMDPaCss22QQyxN2kQdD1oeR05R0bH50OTbnkqrm15hgNhqLGy
+nV1B8Jh1Mo2CsI3HmIj9WhBo5Xmv1UqfKq3H30IVvtLSE+xa6qgTlQ==
+-----END RSA PRIVATE KEY-----"#;
+    let priv_key = key::PrivateKey(pem.to_string().into_bytes());
+    let signer = RSASigningKey::new(&priv_key);
+    signer.expect("invalid key data");
+}
